@@ -54,4 +54,5 @@ public class UsersController {
     public ResponseEntity<UserResponseDTO> buscarUser(){
         return ResponseEntity.ok(usersService.buscarUsuario());
     }
+
 }

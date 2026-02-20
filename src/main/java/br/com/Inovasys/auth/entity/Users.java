@@ -2,6 +2,7 @@ package br.com.Inovasys.auth.entity;
 
 import br.com.Inovasys.auth.role.PerfilUsuario;
 import br.com.Inovasys.auth.role.StatusUsuario;
+import br.com.Inovasys.empresa.entity.Empresa;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -33,13 +34,13 @@ public class Users implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔹 Multi-tenant obrigatório
-    @Column(name = "empresa_id", nullable = false)
-    private Long empresaId;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
 
     // 🔹 Dados pessoais
     @Size(min = 2, max = 100)
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String nome;
 
     @Size(max = 100)
@@ -53,10 +54,10 @@ public class Users implements UserDetails {
 
     @Email
     @Size(max = 60)
-    @Column(nullable = false, length = 60)
+    @Column(length = 60)
     private String email;
 
-    @Pattern(regexp = "\\d{10,11}")
+    @Pattern(regexp = "\\d{10,11}", message = "Telefone deve conter 10 ou 11 dígitos numéricos")
     @Column(length = 11)
     private String telefone;
 
@@ -69,15 +70,13 @@ public class Users implements UserDetails {
 
     // 🔹 Status controlado por enum (evita conflito de boolean)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private StatusUsuario status = StatusUsuario.ATIVO;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private PerfilUsuario perfilUsuario;
 
-    // 🔹 Controle de login
-    @Column(nullable = false)
     private Integer tentativasLogin = 0;
 
     private LocalDateTime ultimoLogin;
