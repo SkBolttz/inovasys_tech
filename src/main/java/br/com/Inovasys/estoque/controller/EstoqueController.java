@@ -3,6 +3,7 @@ package br.com.Inovasys.estoque.controller;
 import br.com.Inovasys.empresa.dto.empresa.EmpresaResponseDTO;
 import br.com.Inovasys.estoque.dto.AtualizarEstoqueDTO;
 import br.com.Inovasys.estoque.dto.CadastroEstoqueDTO;
+import br.com.Inovasys.estoque.dto.EstoqueResponseDTO;
 import br.com.Inovasys.estoque.service.EstoqueService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -23,50 +24,50 @@ public class EstoqueController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<EmpresaResponseDTO> cadastrarItemEstoque(@RequestBody @Valid CadastroEstoqueDTO dto) {
+    public ResponseEntity<EstoqueResponseDTO> cadastrarItemEstoque(@RequestBody @Valid CadastroEstoqueDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(estoqueService.cadastrarItemEstoque(dto));
     }
 
     @PutMapping("/atualizar")
-    public ResponseEntity<EmpresaResponseDTO> atualizarItemEstoque(@RequestBody @Valid AtualizarEstoqueDTO dto) {
+    public ResponseEntity<EstoqueResponseDTO> atualizarItemEstoque(@RequestBody @Valid AtualizarEstoqueDTO dto) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.atualizarItemEstoque(dto));
     }
 
     @PatchMapping("/ativar/{idItem}")
-    public ResponseEntity<EmpresaResponseDTO> ativarItemEstoque(@PathVariable Long idItem) {
+    public ResponseEntity<EstoqueResponseDTO> ativarItemEstoque(@PathVariable Long idItem) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(estoqueService.ativarItemEstoque(idItem));
     }
 
     @PatchMapping("/desativar/{idItem}")
-    public ResponseEntity<EmpresaResponseDTO> desativarItemEstoque(@PathVariable Long idItem) {
+    public ResponseEntity<EstoqueResponseDTO> desativarItemEstoque(@PathVariable Long idItem) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(estoqueService.desativarItemEstoque(idItem));
     }
 
     @GetMapping("/buscar/codigo/{codigoItem}")
-    public ResponseEntity<EmpresaResponseDTO> buscarItemEstoque(@PathVariable String codigoItem) {
+    public ResponseEntity<EstoqueResponseDTO> buscarItemEstoque(@PathVariable String codigoItem) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarItemEstoque(codigoItem));
     }
 
     @GetMapping("/buscar/nome/{nome}")
-    public ResponseEntity<Page<EmpresaResponseDTO>> buscarItemEstoquePorNome(@PathVariable String nome,
+    public ResponseEntity<Page<EstoqueResponseDTO>> buscarItemEstoquePorNome(@PathVariable String nome,
             @PageableDefault(page = 0, size = 20, sort = "descricao") Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarItemEstoquePorNome(nome, pageable));
     }
 
     @GetMapping("/buscar/ativos")
-    public ResponseEntity<Page<EmpresaResponseDTO>> buscarItensEstoqueAtivos(
+    public ResponseEntity<Page<EstoqueResponseDTO>> buscarItensEstoqueAtivos(
             @PageableDefault(page = 0, size = 20, sort = "descricao") Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarItensEstoqueAtivos(pageable));
     }
 
     @GetMapping("/buscar/inativos")
-    public ResponseEntity<Page<EmpresaResponseDTO>> buscarItensEstoqueInativos(
+    public ResponseEntity<Page<EstoqueResponseDTO>> buscarItensEstoqueInativos(
             @PageableDefault(page = 0, size = 20, sort = "descricao") Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarItensEstoqueInativos(pageable));
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<Page<EmpresaResponseDTO>> buscarTodosItensEstoque(
+    public ResponseEntity<Page<EstoqueResponseDTO>> buscarTodosItensEstoque(
             @PageableDefault(page = 0, size = 20, sort = "descricao") Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarTodosItens(pageable));
     }

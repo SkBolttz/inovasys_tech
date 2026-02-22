@@ -5,6 +5,7 @@ import br.com.Inovasys.estoque.Enum.UnidadeMedida;
 import java.math.BigDecimal;
 
 public record AtualizarEstoqueDTO(
+        Long idItem,
         String descricao,
         String codigo,
         BigDecimal precoCompra,
