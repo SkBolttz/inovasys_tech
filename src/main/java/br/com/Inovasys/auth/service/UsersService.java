@@ -9,7 +9,11 @@ import br.com.Inovasys.auth.mapper.UsersMapper;
 import br.com.Inovasys.auth.repository.UsersRepository;
 import br.com.Inovasys.auth.role.PerfilUsuario;
 import br.com.Inovasys.auth.util.ObterUsuarioLogado;
+import br.com.Inovasys.empresa.entity.Empresa;
+import br.com.Inovasys.funcionarios.evento.EnvioEmailEvent;
+import br.com.Inovasys.funcionarios.repository.FuncionarioRepository;
 import jakarta.validation.Valid;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +23,20 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final UsersMapper usersMapper;
+    private final FuncionarioRepository funcionarioRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public UsersService(UsersRepository usersRepository, PasswordEncoder passwordEncoder, UsersMapper usersMapper) {
+    public UsersService(UsersRepository usersRepository, PasswordEncoder passwordEncoder, UsersMapper usersMapper,
+                        FuncionarioRepository funcionarioRepository, ApplicationEventPublisher applicationEventPublisher ) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.usersMapper = usersMapper;
+        this.funcionarioRepository = funcionarioRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
 
-    public UserResponseDTO cadastrarUsuario(String cpf) {
+    public UserResponseDTO cadastrarUsuario(String cpf, String email, Empresa empresa) {
 
         Boolean existe = usersRepository.existsByCpf(cpf).orElseThrow( () -> new CPFInvalidoException("Erro ao verificar CPF."));
         if(existe){
@@ -38,10 +47,19 @@ public class UsersService {
         user.setCpf(cpf);
         String senhaGerada = gerarSenhaAleatoria();
         user.setSenhaHash(passwordEncoder.encode(senhaGerada));
-        user.setPerfilUsuario(PerfilUsuario.DONO);
+
+        if(validarFuncionario(cpf)){
+            user.setPerfilUsuario(PerfilUsuario.FUNCIONARIO);
+            user.setEmpresa(empresa);
+        }else{
+            user.setPerfilUsuario(PerfilUsuario.DONO);
+        }
+
         usersRepository.save(user);
 
-        System.out.println(senhaGerada);
+        applicationEventPublisher.publishEvent(
+                new EnvioEmailEvent(email, senhaGerada)
+        );
 
         return usersMapper.toResponse(user);
     }
@@ -120,5 +138,9 @@ public class UsersService {
     private Users localizarUser(){
         return usersRepository.findByCpf(ObterUsuarioLogado.obterCpfUsuarioLogado()).orElseThrow(
                 () -> new UsuarioNaoLocalizadoException("Usuário não localizado."));
+    }
+
+    private Boolean validarFuncionario(String cpf){
+        return funcionarioRepository.existsByCpf(cpf).isPresent();
     }
 }

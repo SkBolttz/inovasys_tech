@@ -5,6 +5,7 @@ import br.com.Inovasys.auth.entity.Users;
 import br.com.Inovasys.auth.security.TokenJWT;
 import br.com.Inovasys.auth.security.TokenService;
 import br.com.Inovasys.auth.service.UsersService;
+import br.com.Inovasys.auth.util.ObterUsuarioLogado;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,12 +38,14 @@ public class UsersController {
         Users user = (Users) authentication.getPrincipal();
         String token = tokenService.gerarToken(user);
 
+        System.out.println(ObterUsuarioLogado.obterCpfUsuarioLogado());
+
         return ResponseEntity.ok(new TokenJWT(token));
     }
 
     @PostMapping("/cadastro")
     public ResponseEntity<UserResponseDTO> cadastro(@RequestBody @Valid CadastroDTO cadastroDTO){
-        return ResponseEntity.status(201).body(usersService.cadastrarUsuario(cadastroDTO.cpf()));
+        return ResponseEntity.status(201).body(usersService.cadastrarUsuario(cadastroDTO.cpf(), cadastroDTO.email(), null));
     }
 
     @PutMapping("/atualizar-informacoes")

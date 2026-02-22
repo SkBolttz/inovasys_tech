@@ -3,6 +3,22 @@ spring:
     url: jdbc:postgresql://postgres:5432/sistema
     username: admin
     password: admin
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: pedrohenriqueborba1@gmail.com
+    password: mowyfvbgvdanttyd
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
   jpa:
     hibernate:

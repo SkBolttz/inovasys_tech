@@ -29,4 +29,15 @@ public class GlobalExceptionHandlerEmpresa {
                         "Email já cadastro em sistema.",
                         "Ocorreu um erro com o email informado, por favor tente novamente."));
     }
+
+    @ExceptionHandler(EmpresaNaoLocalizadaException.class)
+    public ResponseEntity<Error> handleEmpresaNaoLocalizada(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Empresa não localizada.",
+                        "Ocorreu um erro com a empresa informado, por favor tente novamente."));
+    }
 }
