@@ -2,7 +2,7 @@ package br.com.Inovasys.auth.entity;
 
 import br.com.Inovasys.auth.role.PerfilUsuario;
 import br.com.Inovasys.auth.role.StatusUsuario;
-import br.com.Inovasys.empresa.entity.Empresa;
+import br.com.Inovasys.modulos.gestaoOficina.empresa.entity.Empresa;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;

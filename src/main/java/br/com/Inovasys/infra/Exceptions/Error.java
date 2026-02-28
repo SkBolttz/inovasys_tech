@@ -1,4 +1,4 @@
-package br.com.Inovasys.modulos.gestaoOficina.cliente.exception;
+package br.com.Inovasys.infra.Exceptions;
 
 import lombok.Getter;
 import lombok.Setter;

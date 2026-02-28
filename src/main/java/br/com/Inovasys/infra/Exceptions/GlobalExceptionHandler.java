@@ -1,12 +1,18 @@
-package br.com.Inovasys.modulos.gestaoOficina.cliente.exception;
+package br.com.Inovasys.infra.Exceptions;
 
+import br.com.Inovasys.infra.Exceptions.ClienteException.ClienteNaoLocalizadoException;
+import br.com.Inovasys.infra.Exceptions.ClienteException.DuplicidadeCnpjCpfException;
+import br.com.Inovasys.infra.Exceptions.ClienteException.DuplicidadeEmailClienteException;
+import br.com.Inovasys.infra.Exceptions.ClienteException.DuplicidadeTelefoneClienteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandlerCliente {
+public class GlobalExceptionHandler {
+
+    // Exceptions para Clientes:
 
     @ExceptionHandler(DuplicidadeCnpjCpfException.class)
     public ResponseEntity<Error> handlerCnpjDuplicado(Exception ex) {
@@ -51,4 +57,6 @@ public class GlobalExceptionHandlerCliente {
                         "Telefone já cadastrado em sistema.",
                         "Ocorreu um erro com o telefone informado, por favor tente novamente."));
     }
+
+    //----------------------------//----------------------------//----------------------------/----------------------------//
 }

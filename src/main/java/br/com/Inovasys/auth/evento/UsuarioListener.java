@@ -2,8 +2,8 @@ package br.com.Inovasys.auth.evento;
 
 import br.com.Inovasys.auth.service.EmailService;
 import br.com.Inovasys.auth.service.UsersService;
-import br.com.Inovasys.funcionarios.evento.EnvioEmailEvent;
-import br.com.Inovasys.funcionarios.evento.UsuarioCadastradoEvent;
+import br.com.Inovasys.modulos.gestaoOficina.funcionarios.evento.EnvioEmailEvent;
+import br.com.Inovasys.modulos.gestaoOficina.funcionarios.evento.UsuarioCadastradoEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
