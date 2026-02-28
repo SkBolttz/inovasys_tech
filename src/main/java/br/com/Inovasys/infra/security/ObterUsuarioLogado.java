@@ -1,4 +1,4 @@
-package br.com.Inovasys.auth.util;
+package br.com.Inovasys.infra.security;
 
 import br.com.Inovasys.auth.exception.UsuarioNaoLocalizadoException;
 import org.springframework.security.core.Authentication;

@@ -8,7 +8,7 @@ import br.com.Inovasys.auth.exception.*;
 import br.com.Inovasys.auth.mapper.UsersMapper;
 import br.com.Inovasys.auth.repository.UsersRepository;
 import br.com.Inovasys.auth.role.PerfilUsuario;
-import br.com.Inovasys.auth.util.ObterUsuarioLogado;
+import br.com.Inovasys.infra.security.ObterUsuarioLogado;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.entity.Empresa;
 import br.com.Inovasys.modulos.gestaoOficina.funcionarios.evento.EnvioEmailEvent;
 import br.com.Inovasys.modulos.gestaoOficina.funcionarios.repository.FuncionarioRepository;

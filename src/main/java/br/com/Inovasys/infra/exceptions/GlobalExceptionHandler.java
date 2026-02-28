@@ -12,6 +12,8 @@ import br.com.Inovasys.infra.exceptions.EstoqueException.EstoqueNuloException;
 import br.com.Inovasys.infra.exceptions.EstoqueException.ItemEstoqueNaoLocalizadoException;
 import br.com.Inovasys.infra.exceptions.FuncionarioException.FuncionarioNaoLocalizadoException;
 import br.com.Inovasys.infra.exceptions.FuncionarioException.FuncionarioStatusException;
+import br.com.Inovasys.infra.exceptions.ServicoException.ServicoDuplicadoException;
+import br.com.Inovasys.infra.exceptions.ServicoException.ServicoNaoLocalizadoException;
 import br.com.Inovasys.infra.exceptions.VeiculosException.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -283,5 +285,31 @@ public class GlobalExceptionHandler {
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         "Veículo não localizado em sistema..",
                         "Ocorreu um erro com o veículo informado, por favor tente novamente."));
+    }
+
+    //----------------------------//----------------------------//----------------------------/----------------------------//
+
+    // Exceptions para Serviços:
+
+    @ExceptionHandler(ServicoDuplicadoException.class)
+    public ResponseEntity<Error> handlerServicoDuplicado(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Serviço já cadastrado em sistema.",
+                        "Ocorreu um erro com o serviço informado, por favor tente novamente."));
+    }
+
+    @ExceptionHandler(ServicoNaoLocalizadoException.class)
+    public ResponseEntity<Error> handlerServicoNaoLocalizado(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Serviço não localizado em sistema..",
+                        "Ocorreu um erro com o serviço informado, por favor tente novamente."));
     }
 }

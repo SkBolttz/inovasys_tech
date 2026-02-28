@@ -5,7 +5,7 @@ import br.com.Inovasys.auth.entity.Users;
 import br.com.Inovasys.infra.security.TokenJWT;
 import br.com.Inovasys.infra.security.TokenService;
 import br.com.Inovasys.auth.service.UsersService;
-import br.com.Inovasys.auth.util.ObterUsuarioLogado;
+import br.com.Inovasys.infra.security.ObterUsuarioLogado;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

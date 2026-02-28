@@ -3,7 +3,7 @@ package br.com.Inovasys.modulos.gestaoOficina.funcionarios.service;
 import br.com.Inovasys.auth.entity.Users;
 import br.com.Inovasys.auth.exception.*;
 import br.com.Inovasys.auth.repository.UsersRepository;
-import br.com.Inovasys.auth.util.ObterUsuarioLogado;
+import br.com.Inovasys.infra.security.ObterUsuarioLogado;
 import br.com.Inovasys.infra.exceptions.FuncionarioException.FuncionarioNaoLocalizadoException;
 import br.com.Inovasys.infra.exceptions.FuncionarioException.FuncionarioStatusException;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.entity.Empresa;

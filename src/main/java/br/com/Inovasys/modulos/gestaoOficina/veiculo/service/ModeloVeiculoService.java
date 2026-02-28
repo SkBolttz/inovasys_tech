@@ -3,7 +3,7 @@ package br.com.Inovasys.modulos.gestaoOficina.veiculo.service;
 import br.com.Inovasys.auth.entity.Users;
 import br.com.Inovasys.auth.exception.UsuarioNaoLocalizadoException;
 import br.com.Inovasys.auth.repository.UsersRepository;
-import br.com.Inovasys.auth.util.ObterUsuarioLogado;
+import br.com.Inovasys.infra.security.ObterUsuarioLogado;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.entity.Empresa;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.AtualizarModeloVeiculoDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.CadastrarModeloVeiculoDTO;

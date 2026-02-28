@@ -3,7 +3,7 @@ package br.com.Inovasys.modulos.gestaoOficina.estoque.service;
 import br.com.Inovasys.auth.entity.Users;
 import br.com.Inovasys.auth.exception.*;
 import br.com.Inovasys.auth.repository.UsersRepository;
-import br.com.Inovasys.auth.util.ObterUsuarioLogado;
+import br.com.Inovasys.infra.security.ObterUsuarioLogado;
 import br.com.Inovasys.infra.exceptions.EstoqueException.DuplicidadeCodigoException;
 import br.com.Inovasys.infra.exceptions.EstoqueException.DuplicidadeDescricaoException;
 import br.com.Inovasys.infra.exceptions.EstoqueException.EstoqueNuloException;
