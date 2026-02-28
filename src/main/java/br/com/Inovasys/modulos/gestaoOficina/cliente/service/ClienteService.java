@@ -55,7 +55,7 @@ public class ClienteService {
     public ClienteResponseDTO editarCliente(@Valid ClienteAtualizarDTO dto) {
 
         Empresa empresa = obterEmpresaDoUsuarioLogado();
-        Cliente cliente = localizarClienteCpfCnpj(empresa, dto.cpfCnpj());
+        Cliente cliente = localizarClienteId(empresa, dto.idCliente());
         validarDuplicidadeUpdate(cliente.getId(), empresa, dto.email(), dto.telefone());
 
         if (dto.nome() != null) {
@@ -76,25 +76,25 @@ public class ClienteService {
         return clienteMapper.toResponse(cliente);
     }
 
-    public ClienteResponseDTO ativarCliente(String cnpjCpf) {
+    public ClienteResponseDTO ativarCliente(Long id) {
         Empresa empresa = obterEmpresaDoUsuarioLogado();
-        Cliente cliente = localizarClienteCpfCnpj(empresa, cnpjCpf);
+        Cliente cliente = localizarClienteId(empresa, id);
         cliente.setAtivo(true);
         clienteRepository.save(cliente);
         return clienteMapper.toResponse(cliente);
     }
 
-    public ClienteResponseDTO desativarCliente(String cnpjCpf) {
+    public ClienteResponseDTO desativarCliente(Long id) {
         Empresa empresa = obterEmpresaDoUsuarioLogado();
-        Cliente cliente = localizarClienteCpfCnpj(empresa, cnpjCpf);
+        Cliente cliente = localizarClienteId(empresa, id);
         cliente.setAtivo(false);
         clienteRepository.save(cliente);
         return clienteMapper.toResponse(cliente);
     }
 
-    public ClienteResponseDTO buscarClientePorCpfCnpj(String cpfCnpj) {
+    public Page<ClienteResponseDTO> buscarClientePorCpfCnpj(String cpfCnpj, Pageable pageable) {
         Empresa empresa = obterEmpresaDoUsuarioLogado();
-        return clienteMapper.toResponse(localizarClienteCpfCnpj(empresa, cpfCnpj));
+        return localizarClienteCpfCnpj(empresa, cpfCnpj, pageable).map(clienteMapper::toResponse);
     }
 
     public Page<ClienteResponseDTO> buscarClientePorNome(String nome, Pageable pageable) {
@@ -163,12 +163,17 @@ public class ClienteService {
             throw new DuplicidadeEmailClienteException("Email já cadastrado para um produto.");
     }
 
-    private Cliente localizarClienteCpfCnpj(Empresa empresa, String cpfCnpj) {
-
+    private Cliente localizarClienteId(Empresa empresa, Long id) {
         return clienteRepository
-                .findByCpfCnpjAndEmpresa(cpfCnpj, empresa)
+                .findByIdAndEmpresa(id, empresa)
                 .orElseThrow(() -> new ClienteNaoLocalizadoException("Cliente não encontrado"));
     }
+
+    private Page<Cliente> localizarClienteCpfCnpj(Empresa empresa, String cpfCnpj, Pageable pageable) {
+        return clienteRepository
+                .findByCpfCnpjContainingIgnoreCaseAndEmpresa(cpfCnpj, empresa, pageable);
+    }
+
     private void validarDuplicidadeUpdate(
             Long id,
             Empresa empresa,

@@ -42,18 +42,18 @@ public class ClienteController {
                 .body(clienteService.editarCliente(dto));
     }
 
-    @PutMapping("/ativar/{cnpjCpf}")
-    public ResponseEntity<ClienteResponseDTO> ativarCliente(@PathVariable String cnpjCpf) {
+    @PutMapping("/ativar/{id}")
+    public ResponseEntity<ClienteResponseDTO> ativarCliente(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(clienteService.ativarCliente(cnpjCpf));
+                .body(clienteService.ativarCliente(id));
     }
 
-    @PutMapping("/desativar/{cnpjCpf}")
-    public ResponseEntity<ClienteResponseDTO> desativarCliente(@PathVariable String cnpjCpf) {
+    @PutMapping("/desativar/{id}")
+    public ResponseEntity<ClienteResponseDTO> desativarCliente(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(clienteService.desativarCliente(cnpjCpf));
+                .body(clienteService.desativarCliente(id));
     }
 
     /*
@@ -63,9 +63,9 @@ public class ClienteController {
      */
 
     @GetMapping("/buscar/cpf-cnpj/{cpfCnpj}")
-    public ResponseEntity<ClienteResponseDTO> buscarPorCpfCnpj(@PathVariable String cpfCnpj) {
+    public ResponseEntity<Page<ClienteResponseDTO>> buscarPorCpfCnpj(@PathVariable String cpfCnpj,@PageableDefault(page = 0, size = 20, sort = "nome")Pageable pageable) {
         return ResponseEntity.ok(
-                clienteService.buscarClientePorCpfCnpj(cpfCnpj));
+                clienteService.buscarClientePorCpfCnpj(cpfCnpj, pageable));
     }
 
     @GetMapping("/buscar/nome/{nome}")
@@ -84,7 +84,7 @@ public class ClienteController {
                 clienteService.buscarTodosClientes(pageable));
     }
 
-    @GetMapping("/buscar/ativos")
+    @GetMapping("/buscar/ativo")
     public ResponseEntity<Page<ClienteResponseDTO>> buscarTodosClientesAtivos(
             @PageableDefault(page = 0, size = 20, sort = "nome") Pageable pageable) {
 
@@ -92,7 +92,7 @@ public class ClienteController {
                 clienteService.buscarTodosAtivos(pageable));
     }
 
-    @GetMapping("/buscar/inativos")
+    @GetMapping("/buscar/inativo")
     public ResponseEntity<Page<ClienteResponseDTO>> buscarTodosClientesInativos(
             @PageableDefault(page = 0, size = 20, sort = "nome") Pageable pageable) {
 

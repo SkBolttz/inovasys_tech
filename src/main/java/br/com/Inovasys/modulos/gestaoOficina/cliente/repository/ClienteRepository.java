@@ -14,8 +14,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     boolean existsByEmailAndEmpresa(String email, Empresa empresa);
 
-    Optional<Cliente> findByCpfCnpjAndEmpresa(String cpfCnpj, Empresa empresa);
-
     boolean existsByEmailAndEmpresaAndIdNot(String email, Empresa empresa, Long id);
 
     boolean existsByTelefoneAndEmpresaAndIdNot(String telefone, Empresa empresa, Long id);
@@ -27,4 +25,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Page<Cliente> findByAtivoAndEmpresa(boolean b, Empresa empresa, Pageable pageable);
 
     Optional<Cliente> findByIdAndEmpresa(Long aLong, Empresa empresa);
+
+    Page<Cliente> findByCpfCnpjContainingIgnoreCaseAndEmpresa(String cpfCnpj, Empresa empresa, Pageable pageable);
 }
