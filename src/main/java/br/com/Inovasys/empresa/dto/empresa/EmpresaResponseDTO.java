@@ -16,7 +16,6 @@ public record EmpresaResponseDTO(
         String atividade_principal,
         String email,
         String telefone,
-        EnderecoResponseDTO endereco,
-        List<UserResponseDTO> usuarios
+        EnderecoResponseDTO endereco
 ) {
 }

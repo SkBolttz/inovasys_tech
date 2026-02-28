@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/sistema
-    username: admin
-    password: admin
+    url: jdbc:postgresql://localhost:5432/inovasys
+    username: postgres
+    password: 123
   mail:
     host: smtp.gmail.com
     port: 587

@@ -41,24 +41,24 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (cnpj != null &&
                     SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                Users usuario = usuarioRepository.findByCpf(cnpj)
-                        .orElseThrow(() ->
-                                new UsernameNotFoundException("Usuário não encontrado"));
+                usuarioRepository.findByCpf(cnpj)
+                        .ifPresent(usuario -> {
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                usuario,
-                                null,
-                                usuario.getAuthorities()
-                        );
+                            UsernamePasswordAuthenticationToken authentication =
+                                    new UsernamePasswordAuthenticationToken(
+                                            usuario,
+                                            null,
+                                            usuario.getAuthorities()
+                                    );
 
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
+                            authentication.setDetails(
+                                    new WebAuthenticationDetailsSource()
+                                            .buildDetails(request)
+                            );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
+                            SecurityContextHolder.getContext()
+                                    .setAuthentication(authentication);
+                        });
             }
         }
 
