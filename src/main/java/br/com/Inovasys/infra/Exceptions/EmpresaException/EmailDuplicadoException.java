@@ -1,4 +1,4 @@
-package br.com.Inovasys.modulos.gestaoOficina.empresa.exception;
+package br.com.Inovasys.infra.Exceptions.EmpresaException;
 
 public class EmailDuplicadoException extends RuntimeException {
     public EmailDuplicadoException(String message) {
