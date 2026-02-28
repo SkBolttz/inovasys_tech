@@ -9,8 +9,8 @@ import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.AtualizarTipoCombustive
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.CadastrarTipoCombustivelDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.TipoCombustivelResponseDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.TipoCombustivel;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.DuplicidadeTipoCombustivelException;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.TipoCombustivelNaoLocalizadoException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.DuplicidadeTipoCombustivelException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.TipoCombustivelNaoLocalizadoException;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.mapper.TipoCombustivelMapper;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.repository.TipoCombustivelRepository;
 import jakarta.validation.Valid;

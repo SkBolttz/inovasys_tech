@@ -1,4 +1,4 @@
-package br.com.Inovasys.modulos.gestaoOficina.veiculo.exception;
+package br.com.Inovasys.infra.Exceptions.VeiculosException;
 
 public class ModeloNaoLocalizadoException extends RuntimeException {
     public ModeloNaoLocalizadoException(String message) {

@@ -10,9 +10,9 @@ import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.CadastrarModeloVeiculoD
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.ModeloVeiculoResponseDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.MarcaVeiculo;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.ModeloVeiculo;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.DuplicidadeModeloException;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.MarcaNaoLocalizadaException;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.ModeloNaoLocalizadoException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.DuplicidadeModeloException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.MarcaNaoLocalizadaException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.ModeloNaoLocalizadoException;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.mapper.ModeloVeiculoMapper;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.repository.MarcaVeiculoRepository;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.repository.ModeloVeiculoRepository;

@@ -3,8 +3,8 @@ package br.com.Inovasys.modulos.gestaoOficina.veiculo.service;
 import br.com.Inovasys.auth.exception.UsuarioNaoLocalizadoException;
 import br.com.Inovasys.auth.repository.UsersRepository;
 import br.com.Inovasys.auth.util.ObterUsuarioLogado;
+import br.com.Inovasys.infra.Exceptions.ClienteException.ClienteNaoLocalizadoException;
 import br.com.Inovasys.modulos.gestaoOficina.cliente.entity.Cliente;
-import br.com.Inovasys.modulos.gestaoOficina.cliente.exception.ClienteNaoLocalizadoException;
 import br.com.Inovasys.modulos.gestaoOficina.cliente.repository.ClienteRepository;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.entity.Empresa;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.AtualizarVeiculoDTO;
@@ -15,11 +15,9 @@ import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.TipoCombustivel;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.TipoVeiculo;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.Veiculo;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.repository.*;
-import br.com.Inovasys.veiculo.entity.*;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.DuplicidadeVeiculoException;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.VeiculoNaoLocalizadoException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.DuplicidadeVeiculoException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.VeiculoNaoLocalizadoException;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.mapper.VeiculoMapper;
-import br.com.Inovasys.veiculo.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +27,6 @@ public class VeiculoService {
 
     private final VeiculoRepository veiculoRepository;
     private final ClienteRepository clienteRepository;
-    private final MarcaVeiculoRepository marcaRepository;
     private final ModeloVeiculoRepository modeloRepository;
     private final TipoVeiculoRepository tipoRepository;
     private final TipoCombustivelRepository combustivelRepository;
@@ -39,7 +36,6 @@ public class VeiculoService {
     public VeiculoService(
             VeiculoRepository veiculoRepository,
             ClienteRepository clienteRepository,
-            MarcaVeiculoRepository marcaRepository,
             ModeloVeiculoRepository modeloRepository,
             TipoVeiculoRepository tipoRepository,
             TipoCombustivelRepository combustivelRepository,
@@ -48,7 +44,6 @@ public class VeiculoService {
 
         this.veiculoRepository = veiculoRepository;
         this.clienteRepository = clienteRepository;
-        this.marcaRepository = marcaRepository;
         this.modeloRepository = modeloRepository;
         this.tipoRepository = tipoRepository;
         this.combustivelRepository = combustivelRepository;

@@ -9,8 +9,8 @@ import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.AtualizarTipoVeiculoDTO
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.CadastrarTipoVeiculoDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.TipoVeiculoResponseDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.TipoVeiculo;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.DuplicidadeTipoVeiculoException;
-import br.com.Inovasys.modulos.gestaoOficina.veiculo.exception.TipoVeiculoNaoLocalizadoException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.DuplicidadeTipoVeiculoException;
+import br.com.Inovasys.infra.Exceptions.VeiculosException.TipoVeiculoNaoLocalizadoException;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.mapper.TipoVeiculoMapper;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.repository.TipoVeiculoRepository;
 import jakarta.validation.Valid;

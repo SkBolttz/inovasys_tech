@@ -1,4 +1,4 @@
-package br.com.Inovasys.modulos.gestaoOficina.veiculo.exception;
+package br.com.Inovasys.infra.Exceptions.VeiculosException;
 
 public class DuplicidadeModeloException extends RuntimeException {
     public DuplicidadeModeloException(String message) {
