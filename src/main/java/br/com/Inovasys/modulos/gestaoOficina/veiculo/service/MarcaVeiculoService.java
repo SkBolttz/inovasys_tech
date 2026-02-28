@@ -9,8 +9,8 @@ import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.AtualizarMarcaVeiculoDT
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.CadastrarMarcaVeiculoDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.dto.MarcaVeiculoResponseDTO;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.entity.MarcaVeiculo;
-import br.com.Inovasys.infra.Exceptions.VeiculosException.DuplicidadeMarcaException;
-import br.com.Inovasys.infra.Exceptions.VeiculosException.MarcaNaoLocalizadaException;
+import br.com.Inovasys.infra.exceptions.VeiculosException.DuplicidadeMarcaException;
+import br.com.Inovasys.infra.exceptions.VeiculosException.MarcaNaoLocalizadaException;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.mapper.MarcaVeiculoMapper;
 import br.com.Inovasys.modulos.gestaoOficina.veiculo.repository.MarcaVeiculoRepository;
 import jakarta.validation.Valid;

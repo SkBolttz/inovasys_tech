@@ -5,7 +5,7 @@ import br.com.Inovasys.auth.exception.EmailDuplicadoException;
 import br.com.Inovasys.auth.exception.UsuarioNaoLocalizadoException;
 import br.com.Inovasys.auth.repository.UsersRepository;
 import br.com.Inovasys.auth.util.ObterUsuarioLogado;
-import br.com.Inovasys.infra.Exceptions.EmpresaException.CNPJDuplicadoException;
+import br.com.Inovasys.infra.exceptions.EmpresaException.CNPJDuplicadoException;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.dto.empresa.CadastrarEmpresaDTO;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.dto.empresa.EmpresaResponseDTO;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.entity.Empresa;

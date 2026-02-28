@@ -2,8 +2,8 @@ package br.com.Inovasys.auth.controller;
 
 import br.com.Inovasys.auth.dto.*;
 import br.com.Inovasys.auth.entity.Users;
-import br.com.Inovasys.auth.security.TokenJWT;
-import br.com.Inovasys.auth.security.TokenService;
+import br.com.Inovasys.infra.security.TokenJWT;
+import br.com.Inovasys.infra.security.TokenService;
 import br.com.Inovasys.auth.service.UsersService;
 import br.com.Inovasys.auth.util.ObterUsuarioLogado;
 import jakarta.validation.Valid;
