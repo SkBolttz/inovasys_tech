@@ -34,16 +34,16 @@ public class FuncionarioController {
                 .body(funcionarioService.atualizarFuncionario(dto));
     }
 
-    @PatchMapping("/ativar/{cpf}")
-    public ResponseEntity<FuncionarioResponseDTO> ativarFuncionario(@PathVariable String cpf) {
+    @PatchMapping("/ativar/{id}")
+    public ResponseEntity<FuncionarioResponseDTO> ativarFuncionario(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(funcionarioService.ativarFuncionario(cpf));
+                .body(funcionarioService.ativarFuncionario(id));
     }
 
-    @PatchMapping("/desativar/{cpf}")
-    public ResponseEntity<FuncionarioResponseDTO> inativarFuncionario(@PathVariable String cpf) {
+    @PatchMapping("/desativar/{id}")
+    public ResponseEntity<FuncionarioResponseDTO> inativarFuncionario(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(funcionarioService.inativarFuncionario(cpf));
+                .body(funcionarioService.inativarFuncionario(id));
     }
 
     @GetMapping("/buscar/cpf/{cpf}")

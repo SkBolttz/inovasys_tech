@@ -27,4 +27,6 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     Page<Funcionario> findByAtivoAndEmpresa(Boolean ativo, Empresa empresa, Pageable pageable);
 
     Optional<Funcionario> existsByCpf(String cpf);
+
+    Optional<Funcionario> findByIdAndEmpresa(Long id, Empresa empresa);
 }

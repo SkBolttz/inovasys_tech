@@ -53,13 +53,13 @@ public class EstoqueController {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarItemEstoquePorNome(nome, pageable));
     }
 
-    @GetMapping("/buscar/ativos")
+    @GetMapping("/buscar/ativo")
     public ResponseEntity<Page<EstoqueResponseDTO>> buscarItensEstoqueAtivos(
             @PageableDefault(page = 0, size = 20, sort = "descricao") Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarItensEstoqueAtivos(pageable));
     }
 
-    @GetMapping("/buscar/inativos")
+    @GetMapping("/buscar/inativo")
     public ResponseEntity<Page<EstoqueResponseDTO>> buscarItensEstoqueInativos(
             @PageableDefault(page = 0, size = 20, sort = "descricao") Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(estoqueService.buscarItensEstoqueInativos(pageable));

@@ -89,7 +89,7 @@ public class FuncionarioService {
         Empresa empresa = obterEmpresaDoUsuarioLogado();
 
         Funcionario funcionario =
-                localizarFuncionarioPorCpf(normalizarCpf(dto.cpf()), empresa);
+                localizarFuncionarioPorCpf(dto.cpf(), empresa);
 
         validarDuplicidadeUpdate(
                 funcionario.getId(),
@@ -116,12 +116,12 @@ public class FuncionarioService {
        ATIVAR
        ===================================================== */
 
-    public FuncionarioResponseDTO ativarFuncionario(String cpf) {
+    public FuncionarioResponseDTO ativarFuncionario(Long id) {
 
         Empresa empresa = obterEmpresaDoUsuarioLogado();
 
         Funcionario funcionario =
-                localizarFuncionarioPorCpf(normalizarCpf(cpf), empresa);
+                localizarFuncionarioId(id, empresa);
 
         if (funcionario.getAtivo()) {
             throw new FuncionarioStatusException(
@@ -139,12 +139,12 @@ public class FuncionarioService {
        INATIVAR
        ===================================================== */
 
-    public FuncionarioResponseDTO inativarFuncionario(String cpf) {
+    public FuncionarioResponseDTO inativarFuncionario(Long id) {
 
         Empresa empresa = obterEmpresaDoUsuarioLogado();
 
         Funcionario funcionario =
-                localizarFuncionarioPorCpf(normalizarCpf(cpf), empresa);
+                localizarFuncionarioId(id, empresa);
 
         if (!funcionario.getAtivo()) {
             throw new FuncionarioStatusException(
@@ -239,6 +239,18 @@ public class FuncionarioService {
 
     private Empresa obterEmpresaDoUsuarioLogado() {
         return localizarUsuario().getEmpresa();
+    }
+
+    private Funcionario localizarFuncionarioId(
+            Long id,
+            Empresa empresa) {
+
+        return funcionarioRepository
+                .findByIdAndEmpresa(id, empresa)
+                .orElseThrow(() ->
+                        new FuncionarioNaoLocalizadoException(
+                                "Funcionário não localizado."
+                        ));
     }
 
     private Funcionario localizarFuncionarioPorCpf(

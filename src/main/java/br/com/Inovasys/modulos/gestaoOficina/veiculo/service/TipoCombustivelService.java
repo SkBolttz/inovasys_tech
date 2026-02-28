@@ -43,6 +43,7 @@ public class TipoCombustivelService {
 
         TipoCombustivel tipo = tipoCombustivelMapper.toEntity(dto);
         tipo.setEmpresa(empresa);
+        tipo.setAtivo(true);
 
         tipoCombustivelRepository.save(tipo);
         return tipoCombustivelMapper.toResponse(tipo);

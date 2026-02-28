@@ -48,6 +48,7 @@ public class ModeloVeiculoService {
 
         ModeloVeiculo modelo = modeloVeiculoMapper.toEntity(dto);
         modelo.setEmpresa(empresa);
+        modelo.setAtivo(true);
         modelo.setMarcaVeiculo(marcaVeiculo);
 
         modeloVeiculoRepository.save(modelo);

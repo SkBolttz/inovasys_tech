@@ -61,8 +61,6 @@ public class VeiculoService {
             );
         }
 
-        System.out.println(dto);
-
         Cliente cliente = clienteRepository
                 .findByIdAndEmpresa(dto.idCliente(), empresa)
                 .orElseThrow(() ->
@@ -86,6 +84,7 @@ public class VeiculoService {
         veiculo.setCliente(cliente);
         veiculo.setModelo(modelo);
         veiculo.setTipo(tipo);
+        veiculo.setAtivo(true);
         veiculo.setCombustivel(combustivel);
 
         veiculoRepository.save(veiculo);
