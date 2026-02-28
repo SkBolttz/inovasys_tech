@@ -1,4 +1,4 @@
-package br.com.Inovasys.modulos.gestaoOficina.estoque.exception;
+package br.com.Inovasys.infra.Exceptions.EstoqueException;
 
 public class EstoqueNuloException extends RuntimeException {
     public EstoqueNuloException(String message) {
