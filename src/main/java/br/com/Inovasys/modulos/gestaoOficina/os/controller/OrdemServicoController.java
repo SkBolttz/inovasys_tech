@@ -3,6 +3,7 @@ package br.com.Inovasys.modulos.gestaoOficina.os.controller;
 import br.com.Inovasys.modulos.gestaoOficina.os.dto.*;
 import br.com.Inovasys.modulos.gestaoOficina.os.enuns.Status;
 import br.com.Inovasys.modulos.gestaoOficina.os.service.OrdemServicoService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -46,6 +47,11 @@ public class OrdemServicoController {
         return ResponseEntity.ok(ordemServicoService.removerProdutoOS(osId, itemEstoqueId));
     }
 
+    @PutMapping("/atualizar-quantidade/OS")
+    public ResponseEntity<OrdemServicoResponseDTO> atualizarQuantidadeProdutoOS(@RequestBody @Valid AtualizarQuantidadeProdutoOS atualizarQuantidadeProdutoOS){
+        return ResponseEntity.ok(ordemServicoService.atualizarQuantidadeProdutoOS(atualizarQuantidadeProdutoOS));
+    }
+
     @PutMapping("/iniciar/{osId}")
     public ResponseEntity<OrdemServicoResponseDTO> iniciarOS(@PathVariable Long osId) {
         return ResponseEntity.ok(ordemServicoService.iniciarOS(osId));
@@ -85,12 +91,12 @@ public class OrdemServicoController {
         );
     }
 
-    @GetMapping("/listar/funcionario/{cpfFuncionario}")
-    public ResponseEntity<Page<OrdemServicoResponseDTO>> listarOsFuncionario(@PathVariable String cpfFuncionario,
+    @GetMapping("/listar/funcionario/{id}")
+    public ResponseEntity<Page<OrdemServicoResponseDTO>> listarOsFuncionario(@PathVariable Long id,
             @RequestParam(required = false) Status status, @PageableDefault(page = 0, size = 20, sort = "numero")
             Pageable pageable) {
         return ResponseEntity.ok(
-                ordemServicoService.listarOsDoFuncionario(cpfFuncionario, status, pageable)
+                ordemServicoService.listarOsDoFuncionario(id, status, pageable)
         );
     }
 }

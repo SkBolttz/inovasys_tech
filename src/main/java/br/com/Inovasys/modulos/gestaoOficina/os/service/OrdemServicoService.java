@@ -3,6 +3,8 @@ package br.com.Inovasys.modulos.gestaoOficina.os.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import br.com.Inovasys.auth.entity.Users;
 import br.com.Inovasys.auth.exception.UsuarioNaoLocalizadoException;
@@ -24,8 +26,10 @@ import br.com.Inovasys.modulos.gestaoOficina.funcionarios.repository.Funcionario
 import br.com.Inovasys.modulos.gestaoOficina.itemEstoqueOs.entity.ItemEstoqueOS;
 import br.com.Inovasys.modulos.gestaoOficina.itemServicoOS.entity.ItemServicoOS;
 import br.com.Inovasys.modulos.gestaoOficina.os.dto.*;
+import br.com.Inovasys.modulos.gestaoOficina.os.entity.AvariaOS;
 import br.com.Inovasys.modulos.gestaoOficina.os.entity.OrdemServico;
 import br.com.Inovasys.modulos.gestaoOficina.os.enuns.Status;
+import br.com.Inovasys.modulos.gestaoOficina.os.mapper.AvariaOSMapper;
 import br.com.Inovasys.modulos.gestaoOficina.os.mapper.OrdemServicoMapper;
 import br.com.Inovasys.modulos.gestaoOficina.os.repository.OrdemServicoRepository;
 import br.com.Inovasys.modulos.gestaoOficina.servicos.entity.Servico;
@@ -49,6 +53,7 @@ public class OrdemServicoService {
     private final ServicoRepository servicoRepository;
     private final OrdemServicoMapper osMapper;
     private final UsersRepository usersRepository;
+    private final AvariaOSMapper avariaOsMapper;
 
 
     public OrdemServicoService(
@@ -59,7 +64,8 @@ public class OrdemServicoService {
             FuncionarioRepository funcionarioRepository,
             EstoqueRepository estoqueRepository,
             ServicoRepository servicoRepository,
-            OrdemServicoMapper osMapper) {
+            OrdemServicoMapper osMapper,
+            AvariaOSMapper avariaOSMapper) {
 
         this.osRepository = osRepository;
         this.usersRepository = usersRepository;
@@ -69,6 +75,7 @@ public class OrdemServicoService {
         this.estoqueRepository = estoqueRepository;
         this.servicoRepository = servicoRepository;
         this.osMapper = osMapper;
+        this.avariaOsMapper = avariaOSMapper;
     }
 
     // =========================================================
@@ -78,11 +85,13 @@ public class OrdemServicoService {
     public OrdemServicoResponseDTO criarOrdemServico(CriarOrdemServicoDTO dto) {
 
         Empresa empresa = obterEmpresaDoUsuarioLogado();
-        Cliente cliente = localizarCliente(empresa, dto.cpfCnpj());
-        Veiculo veiculo = localizarVeiculo(empresa, dto.placaVeiculo());
-        Funcionario funcionario = localizarFuncionario(empresa, dto.cpfFuncionarioResponsavel());
+        Cliente cliente = localizarCliente(empresa, dto.idCliente());
+        Veiculo veiculo = localizarVeiculo(empresa, dto.idVeiculo());
+        Funcionario funcionario = localizarFuncionario(empresa, dto.idFuncionario());
 
         OrdemServico os = osMapper.toEntity(dto);
+
+        // Configurações Básicas
         os.setNumero(gerarNumeroOS(empresa));
         os.setEmpresa(empresa);
         os.setCliente(cliente);
@@ -91,10 +100,21 @@ public class OrdemServicoService {
         os.setDataAbertura(LocalDateTime.now());
         os.setStatus(Status.ABERTA);
         os.setAtivo(true);
-        os.setPrazoEntrega(dto.prazoEntrega()); // Adição realizada para controle de prazo
-        os.setDescricaoProblema(dto.descricaoProblema());
 
-        // LISTAS MUTÁVEIS
+        // Mapeamento das Avarias (O "Mapa" de cliques na imagem)
+        if (dto.avarias() != null && !dto.avarias().isEmpty()) {
+            List<AvariaOS> listaAvarias = dto.avarias().stream()
+                    .map(avariaDto -> {
+                        AvariaOS avaria = avariaOsMapper.toEntity(avariaDto);
+                        avaria.setOrdemServico(os);
+                        return avaria;
+                    }).collect(Collectors.toList());
+            os.setAvarias(listaAvarias);
+        } else {
+            os.setAvarias(new ArrayList<>());
+        }
+
+        // Inicialização de Listas Mutáveis para Itens
         os.setServicos(new ArrayList<>());
         os.setProdutos(new ArrayList<>());
 
@@ -115,6 +135,12 @@ public class OrdemServicoService {
         Servico servico = servicoRepository.findByIdAndEmpresa(dto.idServico(), empresa)
                 .orElseThrow(() -> new ServicoNaoLocalizadoException("Serviço não encontrado"));
 
+        // Localiza o funcionário executor, se informado no DTO
+        Funcionario executor = null;
+        if (dto.idFuncionarioExecutor() != null) {
+            executor = localizarFuncionario(empresa, dto.idFuncionarioExecutor());
+        }
+
         boolean jaExiste = os.getServicos().stream()
                 .anyMatch(s -> s.getServico().getId().equals(servico.getId()));
 
@@ -122,17 +148,28 @@ public class OrdemServicoService {
             throw new ServicoDuplicadoOSException("Serviço já adicionado a esta OS");
         }
 
-        ItemServicoOS item = new ItemServicoOS();
-        item.setServico(servico);
-        item.setQuantidade(1);
-        item.setValorUnitario(servico.getValorMaoDeObra());
-        item.setOrdemServico(os);
+        ItemServicoOS item = getItemServicoOS(dto, servico, os);
 
+        os.setFuncionarioResponsavel(executor);
         os.getServicos().add(item);
         atualizarValoresOS(os);
 
         osRepository.save(os);
         return osMapper.toResponse(os);
+    }
+
+    private static ItemServicoOS getItemServicoOS(AdicionarServicoOSDTO dto, Servico servico, OrdemServico os) {
+        ItemServicoOS item = new ItemServicoOS();
+        item.setServico(servico);
+        item.setOrdemServico(os);
+
+        // --- LÓGICA DE FLEXIBILIDADE ---
+        // Se o DTO trouxe quantidade, usa ela; senão, padrão 1.
+        item.setQuantidade(dto.quantidade() != null ? dto.quantidade() : 1);
+
+        // Se o DTO trouxe valor aplicado (negociado), usa ele; senão, usa o valor padrão do cadastro.
+        item.setValorUnitario(dto.valorAplicado() != null ? dto.valorAplicado() : servico.getValorMaoDeObra());
+        return item;
     }
 
     // =========================================================
@@ -156,17 +193,21 @@ public class OrdemServicoService {
             throw new QuantidadeEstoqueException("Quantidade solicitada maior que o estoque disponível");
         }
 
+        // Define qual valor será usado: o do DTO (negociado) ou o do Cadastro (padrão)
+        BigDecimal precoFinal = dto.valorAplicado() != null ? dto.valorAplicado() : produto.getPrecoVenda();
+
         ItemEstoqueOS item = new ItemEstoqueOS();
         item.setProduto(produto);
         item.setQuantidade(dto.quantidade());
-        item.setValorUnitario(produto.getPrecoVenda());
-        item.setValorTotal(produto.getPrecoVenda().multiply(BigDecimal.valueOf(dto.quantidade())));
+        item.setValorUnitario(precoFinal);
+        item.setValorTotal(precoFinal.multiply(BigDecimal.valueOf(dto.quantidade())));
         item.setOrdemServico(os);
 
+        // Baixa automática no estoque
         produto.setEstoqueAtual(produto.getEstoqueAtual() - dto.quantidade());
 
         os.getProdutos().add(item);
-        atualizarValoresOS(os);
+        atualizarValoresOS(os); // Garante que o valorTotal da OS seja recalculado
 
         osRepository.save(os);
         return osMapper.toResponse(os);
@@ -177,12 +218,17 @@ public class OrdemServicoService {
     // =========================================================
 
     public OrdemServicoResponseDTO removerServicoOS(Long osId, Long itemServicoId) {
-
         Empresa empresa = obterEmpresaDoUsuarioLogado();
         OrdemServico os = localizarOS(osId, empresa);
         validarOSAlteravel(os);
 
-        os.getServicos().removeIf(s -> s.getId().equals(itemServicoId));
+        // Localiza o item específico dentro da lista da OS
+        ItemServicoOS item = os.getServicos().stream()
+                .filter(s -> s.getId().equals(itemServicoId))
+                .findFirst()
+                .orElseThrow(() -> new ServicoNaoLocalizadoException("Serviço não encontrado nesta Ordem de Serviço"));
+
+        os.getServicos().remove(item);
         atualizarValoresOS(os);
 
         osRepository.save(os);
@@ -190,7 +236,6 @@ public class OrdemServicoService {
     }
 
     public OrdemServicoResponseDTO removerProdutoOS(Long osId, Long itemEstoqueId) {
-
         Empresa empresa = obterEmpresaDoUsuarioLogado();
         OrdemServico os = localizarOS(osId, empresa);
         validarOSAlteravel(os);
@@ -200,6 +245,7 @@ public class OrdemServicoService {
                 .findFirst()
                 .orElseThrow(() -> new ProdutoNaoLocalizadoException("Produto não encontrado na OS"));
 
+        // Devolve a quantidade ao estoque antes de remover o item
         Estoque produto = item.getProduto();
         produto.setEstoqueAtual(produto.getEstoqueAtual() + item.getQuantidade());
 
@@ -207,6 +253,41 @@ public class OrdemServicoService {
         atualizarValoresOS(os);
 
         osRepository.save(os);
+        return osMapper.toResponse(os);
+    }
+
+    public OrdemServicoResponseDTO atualizarQuantidadeProdutoOS(AtualizarQuantidadeProdutoOS atualizarQuantidadeProdutoOS) {
+        Empresa empresa = obterEmpresaDoUsuarioLogado();
+        OrdemServico os = localizarOS(atualizarQuantidadeProdutoOS.idOs(), empresa);
+        validarOSAlteravel(os);
+
+        ItemEstoqueOS item = os.getProdutos().stream()
+                .filter(p -> p.getId().equals(atualizarQuantidadeProdutoOS.idProduto()))
+                .findFirst()
+                .orElseThrow(() -> new ProdutoNaoLocalizadoException("Produto não encontrado na OS"));
+
+        if (atualizarQuantidadeProdutoOS.quantidade() <= 0) {
+            return removerProdutoOS(atualizarQuantidadeProdutoOS.idOs(), atualizarQuantidadeProdutoOS.idProduto());
+        }
+
+        Estoque produto = item.getProduto();
+        int diferenca = atualizarQuantidadeProdutoOS.quantidade() - item.getQuantidade();
+
+        // Se estiver aumentando, verifica se tem estoque para o que falta
+        if (diferenca > 0 && produto.getEstoqueAtual() < diferenca) {
+            throw new QuantidadeEstoqueException("Estoque insuficiente para aumentar a quantidade deste produto");
+        }
+
+        // Ajusta o estoque base: se diferença for positiva, subtrai do estoque. Se negativa, soma (devolve).
+        produto.setEstoqueAtual(produto.getEstoqueAtual() - diferenca);
+
+        // Atualiza o item
+        item.setQuantidade(atualizarQuantidadeProdutoOS.quantidade());
+        item.setValorTotal(item.getValorUnitario().multiply(BigDecimal.valueOf(atualizarQuantidadeProdutoOS.quantidade())));
+
+        atualizarValoresOS(os);
+        osRepository.save(os);
+
         return osMapper.toResponse(os);
     }
 
@@ -326,12 +407,12 @@ public class OrdemServicoService {
     }
 
     public Page<OrdemServicoResponseDTO> listarOsDoFuncionario(
-            String cpfFuncionario,
+            Long id,
             Status status,
             Pageable pageable
     ) {
         Empresa empresa = obterEmpresaDoUsuarioLogado();
-        Funcionario funcionario = localizarFuncionario(empresa, cpfFuncionario);
+        Funcionario funcionario = localizarFuncionario(empresa, id);
 
         Page<OrdemServico> os;
 
@@ -378,18 +459,18 @@ public class OrdemServicoService {
                         ));
     }
 
-    private Cliente localizarCliente(Empresa empresa, String cpfCnpj) {
-        return clienteRepository.findByCpfCnpjAndEmpresa(cpfCnpj, empresa)
+    private Cliente localizarCliente(Empresa empresa, Long id) {
+        return clienteRepository.findByIdAndEmpresa(id, empresa)
                 .orElseThrow(() -> new ClienteNaoLocalizadoException("Cliente não encontrado"));
     }
 
-    private Veiculo localizarVeiculo(Empresa empresa, String placa) {
-        return veiculoRepository.findByPlacaAndEmpresa(placa, empresa)
+    private Veiculo localizarVeiculo(Empresa empresa, Long id) {
+        return veiculoRepository.findByIdAndEmpresa(id, empresa)
                 .orElseThrow(() -> new VeiculoNaoLocalizadoException("Veículo não encontrado"));
     }
 
-    private Funcionario localizarFuncionario(Empresa empresa, String cpf) {
-        return funcionarioRepository.findByCpfAndEmpresa(cpf, empresa)
+    private Funcionario localizarFuncionario(Empresa empresa, Long id) {
+        return funcionarioRepository.findByIdAndEmpresa(id, empresa)
                 .orElseThrow(() -> new FuncionarioNaoLocalizadoException("Funcionário não encontrado"));
     }
 

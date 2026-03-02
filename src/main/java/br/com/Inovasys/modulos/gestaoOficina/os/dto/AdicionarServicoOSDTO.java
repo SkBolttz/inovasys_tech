@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 public record AdicionarServicoOSDTO(
         Long osId,
-        Long idServico
+        Long idServico,
+        BigDecimal valorAplicado,
+        Integer quantidade,
+        Long idFuncionarioExecutor
 ) {
 }
