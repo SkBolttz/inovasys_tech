@@ -1,0 +1,21 @@
+package br.com.Inovasys.modulos.gestaoOficina.os.enuns;
+
+public enum Status {
+
+    ABERTA("Aberta"),
+    EM_EXECUCAO("Em execução"),
+    AGUARDANDO_PECA("Aguardando peça"),
+    FINALIZADA("Finalizada"),
+    CANCELADA("Cancelada"),
+    ATRASADA("Atrasada");
+
+    private final String descricao;
+
+    Status(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+}

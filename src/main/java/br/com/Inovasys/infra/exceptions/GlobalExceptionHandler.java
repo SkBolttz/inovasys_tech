@@ -12,6 +12,7 @@ import br.com.Inovasys.infra.exceptions.EstoqueException.EstoqueNuloException;
 import br.com.Inovasys.infra.exceptions.EstoqueException.ItemEstoqueNaoLocalizadoException;
 import br.com.Inovasys.infra.exceptions.FuncionarioException.FuncionarioNaoLocalizadoException;
 import br.com.Inovasys.infra.exceptions.FuncionarioException.FuncionarioStatusException;
+import br.com.Inovasys.infra.exceptions.OSException.*;
 import br.com.Inovasys.infra.exceptions.ServicoException.ServicoDuplicadoException;
 import br.com.Inovasys.infra.exceptions.ServicoException.ServicoNaoLocalizadoException;
 import br.com.Inovasys.infra.exceptions.VeiculosException.*;
@@ -311,5 +312,71 @@ public class GlobalExceptionHandler {
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         "Serviço não localizado em sistema..",
                         "Ocorreu um erro com o serviço informado, por favor tente novamente."));
+    }
+
+    @ExceptionHandler(OSNaoLocalizadaException.class)
+    public ResponseEntity<Error> handlerOSNaoLocalizada(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "OS não localizado em sistema..",
+                        "Ocorreu um erro com a OS informada, por favor tente novamente."));
+    }
+
+    @ExceptionHandler(ProdutoNaoLocalizadoException.class)
+    public ResponseEntity<Error> handlerProdutoNaoLocalizado(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Produto não localizado em sistema..",
+                        "Ocorreu um erro com o produto informado, por favor tente novamente."));
+    }
+
+    @ExceptionHandler(QuantidadeEstoqueException.class)
+    public ResponseEntity<Error> handlerQuantidadeEstoque(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Quantidade solicitada maior que o estoque disponível.",
+                        "Ocorreu um erro com a quantidade informada, por favor tente novamente."));
+    }
+
+    @ExceptionHandler(ServicoDuplicadoOSException.class)
+    public ResponseEntity<Error> handlerServicoDuplicadoOS(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Serviço já cadastrado na OS.",
+                        "Ocorreu um erro com o serviço informada, por favor tente novamente."));
+    }
+
+    @ExceptionHandler(StatusOSException.class)
+    public ResponseEntity<Error> handlerStatusOS(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Não foi possível alterar o status da OS, valide o seu status atual.",
+                        "Ocorreu um erro com o status informado, por favor tente novamente."));
+    }
+
+    @ExceptionHandler(StatusProdutoException.class)
+    public ResponseEntity<Error> handlerStatusProduto(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Não foi possível alterar o status do produto, valide o seu status atual.",
+                        "Ocorreu um erro com o status informado, por favor tente novamente."));
     }
 }

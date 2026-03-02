@@ -27,4 +27,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Optional<Cliente> findByIdAndEmpresa(Long aLong, Empresa empresa);
 
     Page<Cliente> findByCpfCnpjContainingIgnoreCaseAndEmpresa(String cpfCnpj, Empresa empresa, Pageable pageable);
+
+    Optional<Cliente> findByCpfCnpjAndEmpresa(String cpfCnpj, Empresa empresa);
 }

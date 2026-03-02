@@ -1,0 +1,16 @@
+package br.com.Inovasys.modulos.gestaoOficina.os.dto;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+public record CriarOrdemServicoDTO(
+        String cpfCnpj,
+        String cpfFuncionarioResponsavel,
+        String placaVeiculo,
+        String descricaoProblema,
+        Integer quilometragemEntrada,
+        BigDecimal desconto,
+        String observacoes,
+        LocalDate prazoEntrega
+) {
+}
