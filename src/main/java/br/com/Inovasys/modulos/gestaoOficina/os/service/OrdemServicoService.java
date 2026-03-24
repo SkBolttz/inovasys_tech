@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import br.com.Inovasys.auth.entity.Users;
 import br.com.Inovasys.auth.exception.UsuarioNaoLocalizadoException;
@@ -18,7 +17,6 @@ import br.com.Inovasys.infra.security.ObterUsuarioLogado;
 import br.com.Inovasys.modulos.gestaoOficina.cliente.entity.Cliente;
 import br.com.Inovasys.modulos.gestaoOficina.cliente.repository.ClienteRepository;
 import br.com.Inovasys.modulos.gestaoOficina.empresa.entity.Empresa;
-import br.com.Inovasys.modulos.gestaoOficina.empresa.repository.EmpresaRepository;
 import br.com.Inovasys.modulos.gestaoOficina.estoque.entity.Estoque;
 import br.com.Inovasys.modulos.gestaoOficina.estoque.repository.EstoqueRepository;
 import br.com.Inovasys.modulos.gestaoOficina.funcionarios.entity.Funcionario;
@@ -31,6 +29,7 @@ import br.com.Inovasys.modulos.gestaoOficina.os.entity.OrdemServico;
 import br.com.Inovasys.modulos.gestaoOficina.os.enuns.Status;
 import br.com.Inovasys.modulos.gestaoOficina.os.mapper.AvariaOSMapper;
 import br.com.Inovasys.modulos.gestaoOficina.os.mapper.OrdemServicoMapper;
+import br.com.Inovasys.modulos.gestaoOficina.os.repository.AvariaOsRepository;
 import br.com.Inovasys.modulos.gestaoOficina.os.repository.OrdemServicoRepository;
 import br.com.Inovasys.modulos.gestaoOficina.servicos.entity.Servico;
 import br.com.Inovasys.modulos.gestaoOficina.servicos.repository.ServicoRepository;
@@ -54,6 +53,7 @@ public class OrdemServicoService {
     private final OrdemServicoMapper osMapper;
     private final UsersRepository usersRepository;
     private final AvariaOSMapper avariaOsMapper;
+    private final AvariaOsRepository avariaOsRepository;
 
 
     public OrdemServicoService(
@@ -65,7 +65,8 @@ public class OrdemServicoService {
             EstoqueRepository estoqueRepository,
             ServicoRepository servicoRepository,
             OrdemServicoMapper osMapper,
-            AvariaOSMapper avariaOSMapper) {
+            AvariaOSMapper avariaOSMapper,
+            AvariaOsRepository avariaOsRepository) {
 
         this.osRepository = osRepository;
         this.usersRepository = usersRepository;
@@ -76,6 +77,7 @@ public class OrdemServicoService {
         this.servicoRepository = servicoRepository;
         this.osMapper = osMapper;
         this.avariaOsMapper = avariaOSMapper;
+        this.avariaOsRepository = avariaOsRepository;
     }
 
     // =========================================================
@@ -91,7 +93,6 @@ public class OrdemServicoService {
 
         OrdemServico os = osMapper.toEntity(dto);
 
-        // Configurações Básicas
         os.setNumero(gerarNumeroOS(empresa));
         os.setEmpresa(empresa);
         os.setCliente(cliente);
@@ -101,24 +102,24 @@ public class OrdemServicoService {
         os.setStatus(Status.ABERTA);
         os.setAtivo(true);
 
-        // Mapeamento das Avarias (O "Mapa" de cliques na imagem)
+        osRepository.save(os);
+        OrdemServico osFinal= osRepository.findByIdAndEmpresa(os.getId(), empresa).orElseThrow(
+                () -> new OSNaoLocalizadaException("OS não localizada em sistema."));
+
+        // AVARIAS
         if (dto.avarias() != null && !dto.avarias().isEmpty()) {
+
             List<AvariaOS> listaAvarias = dto.avarias().stream()
                     .map(avariaDto -> {
                         AvariaOS avaria = avariaOsMapper.toEntity(avariaDto);
-                        avaria.setOrdemServico(os);
+                        avaria.setOrdemServico(osFinal);
                         return avaria;
-                    }).collect(Collectors.toList());
-            os.setAvarias(listaAvarias);
-        } else {
-            os.setAvarias(new ArrayList<>());
+                    })
+                    .toList();
+
+            avariaOsRepository.saveAll(listaAvarias);
         }
 
-        // Inicialização de Listas Mutáveis para Itens
-        os.setServicos(new ArrayList<>());
-        os.setProdutos(new ArrayList<>());
-
-        osRepository.save(os);
         return osMapper.toResponse(os);
     }
 
@@ -378,11 +379,6 @@ public class OrdemServicoService {
 
         Empresa empresa = obterEmpresaDoUsuarioLogado();
         Page<OrdemServico> ordens = osRepository.findByEmpresa(empresa, pageable);
-
-        if (ordens.isEmpty()) {
-            throw new OSNaoLocalizadaException("Nenhuma ordem de serviço encontrada");
-        }
-
         return ordens.map(osMapper::toResponse);
     }
 

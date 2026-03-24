@@ -33,29 +33,39 @@ public class EmpresaService {
     }
 
     public EmpresaResponseDTO cadastrarEmpresa(@Valid CadastrarEmpresaDTO cadastrarEmpresaDTO) {
-        validarDuplicidades(cadastrarEmpresaDTO.email(), cadastrarEmpresaDTO.cnpj());
 
-        Empresa empresa = empresaMapper.toEntity(cadastrarEmpresaDTO);
-        Users user = usersRepository.findByCpf(ObterUsuarioLogado.obterCpfUsuarioLogado()).orElseThrow(
-                () -> new UsuarioNaoLocalizadoException("Usuário não localizado."));
+        Empresa empresaExiste = obterEmpresa(cadastrarEmpresaDTO.cnpj());
 
-        List<Users> users = new ArrayList<>(List.of());
-        users.add(user);
+        if(empresaExiste != null){
+            return empresaMapper.toResponse(empresaExiste);
+        }else {
+            validarDuplicidades(cadastrarEmpresaDTO.email(), cadastrarEmpresaDTO.cnpj());
 
-        empresa.getEndereco().setCep(cadastrarEmpresaDTO.endereco().cep().replaceAll("\\D", ""));
-        empresa.setUsuarios(users);
-        empresa.setAbertura(parseData(cadastrarEmpresaDTO.dataAbertura()));
-        empresa.setTelefone(cadastrarEmpresaDTO.telefone().replaceAll("\\D", ""));
+            Empresa empresa = empresaMapper.toEntity(cadastrarEmpresaDTO);
+            Users user = usersRepository.findByCpf(ObterUsuarioLogado.obterCpfUsuarioLogado()).orElseThrow(
+                    () -> new UsuarioNaoLocalizadoException("Usuário não localizado."));
+
+            List<Users> users = new ArrayList<>(List.of());
+            users.add(user);
+
+            empresa.getEndereco().setCep(cadastrarEmpresaDTO.endereco().cep().replaceAll("\\D", ""));
+            empresa.setUsuarios(users);
+            empresa.setAbertura(parseData(cadastrarEmpresaDTO.dataAbertura()));
+            empresa.setTelefone(cadastrarEmpresaDTO.telefone().replaceAll("\\D", ""));
 
 
-        empresaRepository.save(empresa);
+            empresaRepository.save(empresa);
 
-        user.setEmpresa(empresa);
-        usersRepository.save(user);
-
-        return empresaMapper.toResponse(empresa);
+            user.setEmpresa(empresa);
+            usersRepository.save(user);
+            return empresaMapper.toResponse(empresa);
+        }
     }
 
+
+    private Empresa obterEmpresa(String cnpj){
+        return empresaRepository.findByCnpj(cnpj);
+    }
 
     private void validarDuplicidades(String cnpj, String email){
         if(empresaRepository.existsByCnpj(cnpj)){

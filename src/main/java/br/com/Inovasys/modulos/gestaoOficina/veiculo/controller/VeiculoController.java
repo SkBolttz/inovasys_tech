@@ -93,4 +93,14 @@ public class VeiculoController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(veiculoService.buscarVeiculosInativos(pageable));
     }
+
+    @GetMapping("/buscar/veiculo/cliente/{idCliente}")
+    public ResponseEntity<Page<VeiculoResponseDTO>> localizarVeiculoCliente(
+            @PathVariable Long idCliente,
+            @PageableDefault(page = 0, size = 20, sort = "placa") Pageable pageable) {
+
+        return ResponseEntity.ok(
+                veiculoService.buscarVeiculoDoCliente(idCliente, pageable)
+        );
+    }
 }

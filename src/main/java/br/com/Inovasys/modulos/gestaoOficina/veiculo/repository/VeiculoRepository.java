@@ -21,4 +21,6 @@ public interface VeiculoRepository extends JpaRepository<Veiculo, Long> {
     Optional<Veiculo> findByPlacaAndEmpresa(String placa, Empresa empresa);
 
     Optional<Veiculo> findByIdAndEmpresa(Long id, Empresa empresa);
+
+    Page<Veiculo> findByClienteIdAndEmpresa(Long idCliente, Empresa empresa, Pageable pageable);
 }

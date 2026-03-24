@@ -198,6 +198,15 @@ public class VeiculoService {
                 .map(veiculoMapper::toResponse);
     }
 
+    public Page<VeiculoResponseDTO> buscarVeiculoDoCliente(Long idCliente, Pageable pageable){
+
+        Empresa empresa = obterEmpresaUsuarioLogado();
+
+        return veiculoRepository
+                .findByClienteIdAndEmpresa(idCliente, empresa, pageable)
+                .map(veiculoMapper::toResponse);
+    }
+
     // ==========================
 
     private Empresa obterEmpresaUsuarioLogado() {

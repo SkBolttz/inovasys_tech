@@ -109,9 +109,5 @@ public class OrdemServico {
 
     @Column(length = 20)
     private String nivelCombustivel; // Ex: "Vazio", "1/4", "1/2", "3/4", "Cheio"
-
-    // --- RELACIONAMENTO COM AS AVARIAS VISUAIS ---
-    @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AvariaOS> avarias;
 }
 

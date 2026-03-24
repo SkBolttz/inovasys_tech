@@ -25,6 +25,9 @@ public class AvariaOS {
     private Double eixoY;
 
     @Column(length = 50)
+    private String parteVeiculo;
+
+    @Column(length = 50)
     private String tipoDano; // Ex: "Risco", "Amassado", "Quebrado"
 
     @Column(length = 255)
